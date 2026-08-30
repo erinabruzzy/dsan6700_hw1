@@ -6,15 +6,23 @@ paired example environment files (for example a local-dev shape and a deployed s
 so a new developer knows exactly which knobs exist. Never commit real secrets.
 """
 
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
     app_name: str = "DSAN 6700"
-    environment: str = "local-dev"  # mypy static analysis
-    port: int = 8000
+    environment: str = Field(
+        ...,
+        description="environment",
+    )
+    port: int = Field(default=8000, ge=1024, le=65535)
 
-    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        extra="ignore",
+    )
 
 
-settings = Settings()
+settings = Settings()  # type: ignore[call-arg]
