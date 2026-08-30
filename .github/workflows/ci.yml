@@ -1,0 +1,47 @@
+name: CI Checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  quality-checks:
+    name: Run Quality Checks
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Check out the repository
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      # 2. Install uv and Python
+      - name: Install uv and setup Python
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: "latest"
+          enable-cache: true
+          python-version: "3.12"
+
+      # 3. Install dependencies deterministically from uv.lock
+      - name: Install dependencies
+        run: uv sync --group dev --frozen
+
+      # 4. Check linting with Ruff
+      - name: Run Ruff check
+        run: uv run ruff check .
+
+      # 5. Check formatting with Ruff
+      - name: Run Ruff format check
+        run: uv run ruff format --check .
+
+      # 6. Type-check with MyPy
+      - name: Run MyPy type checking
+        run: uv run mypy src/
+
+      # 7. Run Pytest suite
+      - name: Run Pytest
+        run: uv run pytest
+        env:
+          ENVIRONMENT: "ci-testing"

@@ -1,1 +1,0 @@
-from mypkg import mypkg
