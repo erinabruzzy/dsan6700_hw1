@@ -1,6 +1,11 @@
-# mypkg
+# DSAN6700: Homework 1
 
-A package for doing great things!
+The primary goal of this assignment is to demonstrate two key ideas for this class:
+
+1. You are comfortable structuring a Python project from broad instructions.
+
+2. You can synthesize fragments of code from our lectures and labs into a thoughtful solution to a
+problem.
 
 ## Installation
 
@@ -40,18 +45,21 @@ pytest -v tests
 has the repository cloned with remote tracking set up. For now it is enough
 to share the repo and push to it.
 
-- Declare dependencies in pyproject.toml
-- Then, generate uv.lock using the `uv sync --extra dev` command
+Declare dependencies in pyproject.toml
+
+Then, generate uv.lock using the `uv sync --extra dev` command
 
 2) Scaffold a package with the src/ layout. Use uv init (you may start from the course cookiecutter template) to create a project whose package lives under src/.
 
 3) Write your pyproject.toml. Declare a build backend (e.g. hatchling), your runtime
 dependencies, and a dev optional-dependency group for your tooling (ruff, pytest, mypy, pre-commit). Commit the generated uv.lock.
 
-- This command creates a skeleton pyproject.toml: `uv init --package src/mypkg`
-- Use this command to declare the libraries the service needs to run:
+This command creates a skeleton pyproject.toml: `uv init --package src/mypkg`
+
+Use this command to declare the libraries the service needs to run:
 `uv add fastapi pydantic pydantic-settings uvicorn`
-- Add development and quality-checking tools:
+
+Add development and quality-checking tools:
 `uv add --dev ruff pytest mypy pre-commit httpx`
 
 4) Stand up a small FastAPI service skeleton. Your app does not have to do anything
@@ -97,4 +105,4 @@ instructions for installing and running your service on a clean machine. The
 Diátaxis framework offers sound advice on structuring technical documentation.
 Add docstrings to your functions (autoDocstring can scaffold them).
 
-- Downloaded autoDocstring Extension
+Downloaded autoDocstring Extension
