@@ -33,15 +33,33 @@ class PredictResponse(BaseModel):
 
 @app.get("/health", response_model=HealthResponse)
 def health_check() -> HealthResponse:
+    """_summary_
+
+    Returns:
+        HealthResponse: _description_
+    """
     return HealthResponse(status="ok", environment=settings.environment)
 
 
 @app.post("/predict", response_model=PredictResponse)
 def predict(payload: PredictRequest) -> PredictResponse:
+    """_summary_
+
+    Args:
+        payload (PredictRequest): _description_
+
+    Returns:
+        PredictResponse: _description_
+    """
     result = sum(payload.features)
     return PredictResponse(prediction=result)
 
 
 @app.get("/")
 def read_root() -> dict[str, str]:
+    """_summary_
+
+    Returns:
+        dict[str, str]: _description_
+    """
     return {"message": "Welcome to Homework 1"}
