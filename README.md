@@ -1,108 +1,136 @@
 # DSAN6700: Homework 1
 
-The primary goal of this assignment is to demonstrate two key ideas for this class:
+A a clean, packaged, tested, CI-checked service skeleton managed with [`uv`](https://github.com/astral-sh/uv).
 
-1. You are comfortable structuring a Python project from broad instructions.
+---
 
-2. You can synthesize fragments of code from our lectures and labs into a thoughtful solution to a
-problem.
+## Install/Run Guide
 
-## Installation
+Here are copy-pasteable instructions for installing and running the service on a clean machine.
 
-```bash
-pip install mypkg
-```
+### 1. Prerequisites & Installation
 
-## Usage
-
-- TODO
-
-## Contributing
-
-Clone and set up the repository with
+Ensure you have `uv` installed on your machine. Clone the repository and install all dependencies (including development tools) directly from the lockfile:
 
 ```bash
-git clone TODO && cd mypkg
-pip install -e ".[dev]"
+# Clone the repository
+git clone [https://github.com/erinabruzzy/dsan6700_hw1.git](https://github.com/erinabruzzy/dsan6700_hw1.git)
+cd dsan6700_hw1
+
+# Install dependencies deterministically from uv.lock
+uv sync --extra dev --frozen
 ```
 
-Install pre-commit hooks with
+2. Environment Configuration
+Copy the example environment configuration to create your local .env file:
+
+`cp .env.example .env`
+
+> Note: The application uses Pydantic Settings and will fail fast at startup if required environment variables (such as ENVIRONMENT) are missing.
+
+3. Running the Service Locally
+
+Start the local Uvicorn development server:
+
+`uv run uvicorn mypkg.main:app --reload`
+
+Once running, you can access the service endpoints in your browser or API client:
+
+Health Check Endpoint: http://127.0.0.1:8000/health
+
+Interactive OpenAPI Docs (Swagger UI): http://127.0.0.1:8000/docs
+
+**Quality & Development Reference**
+
+Execute all quality gates locally to ensure code meets repository standards before pushing:
 
 ```bash
-pre-commit install
+# Run Ruff (Linting)
+uv run ruff check .
+
+# Run Ruff (Formatting Check)
+uv run ruff format --check .
+
+# Run MyPy (Type Checking)
+uv run mypy src/
+
+# Run Pytest (Unit Testing)
+uv run pytest
 ```
 
-Run tests using
+**Git Pre-Commit Hooks**
+
+Install local pre-commit hooks so linting and formatting run automatically before every commit:
+
+`uv run pre-commit install`
+
+**Continuous Integration (CI)**
+
+A GitHub Actions workflow is configured at .github/workflows/ci.yml. On every push or pull request to the Main branch, CI executes:
 
 ```
-pytest -v tests
+uv sync --extra dev --frozen
+
+uv run ruff check .
+
+uv run ruff format --check .
+
+uv run mypy src/
+
+uv run pytest
 ```
 
 ---
-**Personal Notes:**
+**Personal Notes**
 
-1) Make sure your team shares one environment (via uv.lock) and that everyone
-has the repository cloned with remote tracking set up. For now it is enough
-to share the repo and push to it.
+[x] 1. Shared Environment
 
-Declare dependencies in pyproject.toml
+Managed via uv.lock. Repository tracking configured on remote branch Main.
 
-Then, generate uv.lock using the `uv sync --extra dev` command
+Commands: uv sync --extra dev
 
-2) Scaffold a package with the src/ layout. Use uv init (you may start from the course cookiecutter template) to create a project whose package lives under src/.
+[x] 2. Package Layout
 
-3) Write your pyproject.toml. Declare a build backend (e.g. hatchling), your runtime
-dependencies, and a dev optional-dependency group for your tooling (ruff, pytest, mypy, pre-commit). Commit the generated uv.lock.
+Package configured using src/ layout.
 
-This command creates a skeleton pyproject.toml: `uv init --package src/mypkg`
+Command: uv init --package src/mypkg
 
-Use this command to declare the libraries the service needs to run:
-`uv add fastapi pydantic pydantic-settings uvicorn`
+[x] 3. Project Dependencies
 
-Add development and quality-checking tools:
-`uv add --dev ruff pytest mypy pre-commit httpx`
+Declared hatchling as build backend in pyproject.toml.
 
-4) Stand up a small FastAPI service skeleton. Your app does not have to do anything
-interesting yet, but it must be a real web service:
+Runtime dependencies: uv add fastapi pydantic pydantic-settings uvicorn
 
-- a FastAPI application with at least a /health endpoint that returns a small typed
-response and lets a caller (or a container, or a grader) confirm the service is up;
-- at least one Pydantic request/response model so input is validated at the edge and
-output is serialized predictably;
-- a placeholder "predict"-style endpoint is welcome but optional this week.
+Development tools: uv add --dev ruff pytest mypy pre-commit httpx
 
-`src/mypkg/main.py`
+[x] 4. FastAPI Skeleton
 
-5)  Configure your application. Add typed configuration with Pydantic Settings:
-the app reads its settings from the environment, with validators that fail fast
-at startup on bad config (crash loudly, do not limp along). Provide paired example
-environment files (for example a local-dev shape and a deployed shape) so a new
-developer knows exactly which knobs exist. Never commit real secrets.
+Service implemented in src/mypkg/main.py.
 
-`src/mypkg/config.py`
+Typed /health endpoint returning Pydantic models.
 
-6) Add quality checks:
+[x] 5. Application Config
 
-- ruff for linting and formatting (run both)
-- pytest with at least one meaningful test — for example, hitting your /health
-endpoint with FastAPI's test client, or asserting that your settings validation
-rejects a bad value. A test that asserts nothing does not count
-- pre-commit with a Git hook that runs ruff (and whatever else you like) before
-each commit, so low-quality code never enters the repository
+Implemented fail-fast settings in src/mypkg/config.py using Pydantic Settings.
 
-7)  Incorporate GitHub Workflows. Add a GitHub Actions workflow at
-.github/workflows/ci.yml that runs on every push and pull request and performs
-each step:
-- pick an operating system and install Python;
-- check out the repository;
-- install uv and run uv sync --extra dev --frozen;
-- run uv run ruff check and uv run ruff format --check;
-- run uv run mypy src/ (type-checking);
-- run uv run pytest
+Paired example file provided (.env.example).
 
-8) Provide documentation. Write an informative README with clear, copy-pasteable
-instructions for installing and running your service on a clean machine. The
-Diátaxis framework offers sound advice on structuring technical documentation.
-Add docstrings to your functions (autoDocstring can scaffold them).
+[x] 6. Quality Checks
 
-Downloaded autoDocstring Extension
+Ruff: Configured for linting and formatting.
+
+Pytest: Unit tests verifying /health response and settings fail-fast behavior.
+
+Pre-commit: Git hooks configured in .pre-commit-config.yaml.
+
+[x] 7. GitHub Actions Workflow
+
+Workflow active at .github/workflows/ci.yml targeting Main.
+
+Runs uv sync --extra dev --frozen, ruff check, ruff format, mypy src/, and pytest.
+
+[x] 8. Technical Docs
+
+Structured README with installation instructions.
+
+Function docstrings scaffolded via autoDocstring extension.
